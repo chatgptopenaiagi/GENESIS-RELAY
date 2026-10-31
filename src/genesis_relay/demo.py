@@ -6,7 +6,7 @@ from __future__ import annotations
 import argparse,contextlib,csv,hashlib,json,os,platform,shutil,sqlite3,sys,tempfile,uuid
 from pathlib import Path
 from . import capsule,receiver,returns,state
-from .common import atomic,load,now,sha
+from .common import atomic,load,now,sha,lock
 
 RESOURCE=Path(__file__).with_name('demo_project')
 DEMO_FORMAT='genesis-relay-synthetic-demo'
@@ -78,7 +78,7 @@ def _compute(project):
     expected=[('sample-a',2.0),('sample-b',4.0),('sample-c',6.0)];observed=[(r['id'],float(r['value'])) for r in rows]
     if observed!=expected:raise ValueError('Synthetic observation IDs or values differ from declared fixture')
     values=[x[1] for x in observed];answer=sum(values)/len(values)
-    if abs(answer-4.0)>1e-12:raise ValueError('Mean differs from independent expected value4')
+    if abs(answer-4.0)>1e-12:raise ValueError('Mean differs from independent expected value 4')
     return {'observations':len(values),'mean':answer,'expected_mean':4.0,'absolute_tolerance':1e-12}
 
 def _database(project):
@@ -97,19 +97,24 @@ def _database(project):
     return {'integrity':'ok','observations':len(observations),'runs':len(runs),'artifact_references':len(runs),'source_run_preserved':True}
 
 def accept_demo(receipt):
-    rec=receiver.read(receipt) if isinstance(receipt,(str,Path)) else dict(receipt);project=Path(rec['project_path']);_validate_profile(project)
+    rec=receiver.read(receipt) if isinstance(receipt,(str,Path)) else dict(receipt)
+    with lock(Path(rec['project_path'])/'_relay/demo-accept.lock'):
+        return _accept_demo(rec)
+
+def _accept_demo(rec):
+    project=Path(rec['project_path'])
     folder=project/'_relay/verification';folder.mkdir(parents=True,exist_ok=True)
     out={'schema_version':1,'started_at':now(),'route':rec['route'],'scope':'SYNTHETIC_DEMO_ONLY','project_path':str(project),'source_capsule_id':rec['capsule_id'],'source_capsule_sha256':rec['archive_sha256'],'destination':{'system':platform.system(),'machine':platform.machine(),'executable':sys.executable,'python_version':platform.python_version(),'runtime_inclusive':bool(getattr(sys,'frozen',False))},'passed':{},'failed':{},'skipped':{},'new_run_id':None}
     def check(name,fn):
         try:out['passed'][name]=fn() or True
         except Exception as error:out['failed'][name]=type(error).__name__+': '+str(error)[:500]
     check('immutable_capsule_and_restoration',lambda: receiver.verify_restoration(rec)['status']=='PASSED' or (_ for _ in ()).throw(ValueError('Restoration integrity failed')))
-    check('trusted_demo_source_bytes',lambda:{'experiment_sha256':sha(project/'experiment.py'),'known_source_bytes':True})
+    check('trusted_demo_source_bytes',lambda:(_validate_profile(project) and {'experiment_sha256':sha(project/'experiment.py'),'known_source_bytes':True}))
     check('independent_mean',lambda:_compute(project))
     check('historical_database_and_artifacts',lambda:_database(project))
     if not out['failed']:
         ident='destination-'+uuid.uuid4().hex[:12];out['new_run_id']=ident;target=project/'results'/ident;target.mkdir()
-        result={'id':ident,**_compute(project),'classification':'DESTINATION_OBSERVED_RESULT','source_capsule_id':rec['capsule_id'],'source_capsule_sha256':rec['archive_sha256'],'route':rec['route'],'destination':out['destination'],'recorded_at':now()};atomic(target/'report.json',result);atomic(target/'report.md','# Destination synthetic mean\n\nMean4, absolute tolerance1e-12. Runtime and capsule identity are in report.json.\n')
+        result={'id':ident,**_compute(project),'classification':'DESTINATION_OBSERVED_RESULT','source_capsule_id':rec['capsule_id'],'source_capsule_sha256':rec['archive_sha256'],'route':rec['route'],'destination':out['destination'],'recorded_at':now()};atomic(target/'report.json',result);atomic(target/'report.md','# Destination synthetic mean\n\nMean 4, absolute tolerance 1e-12. Runtime and capsule identity are in report.json.\n')
         with sqlite3.connect(project/'private/observations.sqlite3') as db:db.execute('insert into runs values (?,?,?,?)',(ident,'results/'+ident+'/report.json',4.0,'DESTINATION_OBSERVED'))
         check('new_destination_run_and_relationships',lambda:_database(project))
     out.update(status='ACCEPTANCE_PASSED' if not out['failed'] and not out['skipped'] else 'FAILED',finished_at=now(),receipt_path=str(folder/('demo-acceptance-'+uuid.uuid4().hex[:12]+'.json')))

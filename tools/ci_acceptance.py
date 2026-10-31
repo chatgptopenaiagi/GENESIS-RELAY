@@ -5,7 +5,7 @@ Never point this tool at the operator's laboratory. It creates and operates only
 inside its own new work directory using bundled, invented demo data.
 """
 from __future__ import annotations
-import argparse,datetime,hashlib,http.cookiejar,json,os,platform,shutil,subprocess,sys,time,urllib.error,urllib.request
+import argparse,datetime,hashlib,http.cookiejar,json,os,platform,shutil,subprocess,sys,time,urllib.error,urllib.parse,urllib.request
 from pathlib import Path
 
 def sha(p):
@@ -29,9 +29,9 @@ def main():
  def acceptance(receipt):
   accepted=run('demo','accept',receipt);assert accepted.get('status') in ['PASSED','ACCEPTANCE_PASSED'] or accepted.get('ready_to_continue') is True,accepted
   record=json.loads(Path(receipt).read_text());assert record.get('ready_to_continue') is True,record.get('state');project=Path(record['project_path'])
-  script=project/'acceptance.py'
+  script=project/'experiment.py'
   if script.exists():
-   r=subprocess.run([a.python,'-I',str(script)],cwd=project,env=env,capture_output=True,text=True,timeout=30);assert r.returncode==0,r.stderr[-800:]
+   r=subprocess.run([a.python,'-I',str(script)],cwd=project,env=env,capture_output=True,text=True,timeout=30);assert r.returncode==0,r.stderr[-800:];observed=json.loads(r.stdout);assert observed['passed'] and observed['mean']==4.0,observed
   return {'trusted_demo_acceptance':True,'ready_to_continue':True,'route':record['route'],'capsule_sha256':record['archive_sha256'],'standalone_project_script_executed':script.exists()}
  def ui(source):
   ui_state=work/'scratch/ui-state';started=run('--state-dir',ui_state,'ui','start','--source',source,'--port','8240');url=started['url'];assert started.get('state')=='RUNNING',started
@@ -64,7 +64,7 @@ def main():
     raise AssertionError('UI action timed out')
    action('plan');exported=action('export');ident=exported['ui_id'];action('inspect',ident);action('receive_plan',ident);restored=action('restore',ident);action('verify_restore',ident);action('return_create',ident)
    with op.open(url+'api/data',timeout=30) as r:data=json.load(r);assert data['capsules'] and data['receipts'];assert data['source']['available']
-   restarted=run('--state-dir',ui_state,'ui','restart','--source',source,'--port',str(urllib.request.urlparse(url).port) if hasattr(urllib.request,'urlparse') else '8240');assert restarted['state']=='RUNNING';assert sha(ui_state/'private/ui/access.json')==old
+   restarted=run('--state-dir',ui_state,'ui','restart','--source',source,'--port',str(urllib.parse.urlsplit(url).port));assert restarted['state']=='RUNNING';assert sha(ui_state/'private/ui/access.json')==old
    with op.open(restarted['url']+'api/session',timeout=10) as r:assert json.load(r)['authenticated']
    return {'url':restarted['url'],'packaged_assets_served':True,'local_auth_origin_csrf':True,'actual_actions':['plan','export','inspect','receive_plan','restore','verify_restore','return_create'],'credentials_and_session_survived_restart':True,'inspection_does_not_execute_source':True}
   finally:run('--state-dir',ui_state,'ui','stop')

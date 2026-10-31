@@ -116,7 +116,11 @@ def _mapping(entries,meta,route):
   mapping.append({'root_id':root_id,'source_path':path,'destination_path':target,'type':e.get('type'),'disposition':e.get('disposition'),'sha256':e.get('sha256'),'object':e.get('object'),'size':e.get('size',0),'mode':e.get('mode',0o644),'mtime_ns':e.get('mtime_ns'),'target':e.get('target'),'mapping_reason':reason})
  return mapping
 
-def plan(capsule_path,destination_root,route='LOCAL_LINUX',python=None):
+def default_route():
+ return 'NATIVE_WINDOWS_X64' if os.name=='nt' else 'LOCAL_LINUX'
+
+def plan(capsule_path,destination_root,route=None,python=None):
+ route=route or default_route()
  if route not in ['LOCAL_LINUX','NATIVE_WINDOWS_X64','WSL_LINUX_X64']:raise ValueError('Unknown restoration route')
  result,meta,entries=_verified(capsule_path);root=Path(destination_root).expanduser().absolute()
  if root.is_symlink():raise ValueError('Destination root must not be a symlink')
@@ -177,7 +181,8 @@ def _write_object(z,object_name,target,expected):
   # Partial object belongs to this reconstruction; retain it for bounded resume.
   raise
 
-def restore(capsule_path,destination_root,route='LOCAL_LINUX',python=None):
+def restore(capsule_path,destination_root,route=None,python=None):
+ route=route or default_route()
  capsule_path=Path(capsule_path).absolute();p=plan(capsule_path,destination_root,route,python)
  if p['blocked_prerequisites']:raise RuntimeError('; '.join(p['blocked_prerequisites']))
  root=Path(p['destination_root']);root.mkdir(parents=True,exist_ok=True,mode=0o700)

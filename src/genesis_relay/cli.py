@@ -1,4 +1,4 @@
-"""Private Linux sender CLI; no AI service required for archive mechanics."""
+"""Project continuation CLI; no AI service required for archive mechanics."""
 import argparse,json,sys
 from pathlib import Path
 from . import __version__,capsule,discovery,state
@@ -18,7 +18,7 @@ def main(argv=None):
  s.add_parser('status')
  q=s.add_parser('recover');q.add_argument('--apply',action='store_true')
  q=s.add_parser('ui');q.add_argument('operation',choices=['start','stop','status','access','restart']);q.add_argument('--source');q.add_argument('--port',type=int)
- q=s.add_parser('restore');q.add_argument('capsule');q.add_argument('--destination',required=True);q.add_argument('--route',choices=['LOCAL_LINUX','NATIVE_WINDOWS_X64','WSL_LINUX_X64'],default='LOCAL_LINUX');q.add_argument('--python');q.add_argument('--apply',action='store_true')
+ q=s.add_parser('restore');q.add_argument('capsule');q.add_argument('--destination',required=True);q.add_argument('--route',choices=['LOCAL_LINUX','NATIVE_WINDOWS_X64','WSL_LINUX_X64']);q.add_argument('--python');q.add_argument('--apply',action='store_true')
  q=s.add_parser('adapt');q.add_argument('receipt');q.add_argument('--python',required=True);q.add_argument('--route',default='LOCAL_LINUX');q.add_argument('--apply',action='store_true')
  q=s.add_parser('accept');q.add_argument('receipt');q.add_argument('--apply',action='store_true')
  q=s.add_parser('return');q.add_argument('receipt');q.add_argument('--output',required=True)

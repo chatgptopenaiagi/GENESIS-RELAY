@@ -21,3 +21,9 @@ The authenticated local UI has fixed actions, a single background management wor
 Software packaging includes reusable source, tests, synthetic fixtures and PowerShell adapters. Private capsules, original machine inventories, credentials and research evidence are excluded. Read TEST-RESULTS.json and PLATFORM-STATUS.json for actual current verification; a workflow or script alone is not evidence of native Windows execution.
 
 Acceptance receipts describe the tested state at their recorded time. They are not continuous monitoring. A newly recorded acceptance failure invalidates the current readiness flag even when an earlier READY milestone remains in the append-only history. Working copies preserve source bytes and portable file mode information; full filesystem identity, ACLs, extended attributes, hardlink relationships and directory timestamp semantics are outside version 1 restoration guarantees.
+
+## Portable public product
+
+The `demo` module and bundled `demo_project` resources provide an invented-data, standard-library continuation workflow. Its trusted acceptance checks the known demo and records destination identity, runtime and source digest. It does not automatically execute arbitrary imported capsule scripts. The UI defaults to an owned demo source only when no explicit source/configuration exists; project and state paths remain configurable.
+
+Source/wheel child processes use Python isolated mode and an explicit trusted module root. Frozen distributions dispatch only allowlisted internal modules through their own executable, preserving the runtime-inclusive package boundary. The package contains the browser assets and trusted PowerShell receiver; those are runtime resources rather than development-only screenshots. UI ports are discovered, and local source/destination acceptance observations do not stand in for release CI evidence.

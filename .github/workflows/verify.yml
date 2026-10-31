@@ -1,0 +1,158 @@
+name: Build and verify Relay
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: relay-build-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  regression:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04]
+        python: ['3.10', '3.11', '3.12', '3.13', '3.14']
+        include:
+          - os: windows-2025
+            python: '3.10'
+          - os: windows-2025
+            python: '3.13'
+          - os: windows-2025
+            python: '3.14'
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Run current synthetic regressions
+        run: python tools/run_tests.py --output out/reports/regression-${{ matrix.os }}-${{ matrix.python }}.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: regression-${{ matrix.os }}-${{ matrix.python }}
+          path: out/reports/*.json
+          retention-days: 7
+  linux-build:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.13'
+      - name: Isolated runner build dependencies
+        run: python -m pip install 'build>=1.3,<2' 'setuptools>=80' wheel 'pyinstaller==6.22.3'
+      - name: Build wheel and source distribution
+        run: python -m build --no-isolation --outdir out/artifacts
+      - name: Seven clean package checks
+        run: python tools/test_package.py --wheel out/artifacts/genesis_relay-0.1.0-py3-none-any.whl --sdist out/artifacts/genesis_relay-0.1.0.tar.gz --output out/reports/clean-packages-linux.json
+      - name: Install the built wheel
+        run: python -m pip install --no-index --no-deps out/artifacts/genesis_relay-0.1.0-py3-none-any.whl
+      - name: Export the exact synthetic capsule transferred to Windows
+        run: python tools/ci_acceptance.py --phase export --work out/linux-send --report out/reports/linux-wheel-export.json
+      - name: Build native Linux x86_64 runtime bundle
+        run: python tools/build_distribution.py --kind frozen --output out/artifacts
+      - name: Extract actual Linux distribution
+        run: python tools/extract_distribution.py out/artifacts/GENESIS-RELAY-0.1.0-linux-x86_64.tar.gz out/linux-native
+      - name: Test the extracted native Linux bundle
+        run: python tools/ci_acceptance.py --phase standalone --work out/linux-native-test --executable out/linux-native/GENESIS-RELAY-0.1.0-linux-x86_64/Genesis-Relay --report out/reports/linux-native.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: linux-release-candidate
+          path: |
+            out/artifacts/*
+            out/reports/*.json
+          retention-days: 7
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: linux-demo-transfer
+          path: out/linux-send/transfer/
+          retention-days: 7
+  windows-build:
+    needs: linux-build
+    runs-on: windows-2025
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.13'
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: linux-demo-transfer
+          path: out/incoming
+      - name: Install isolated runner build dependencies
+        run: python -m pip install 'build>=1.3,<2' 'setuptools>=80' wheel 'pyinstaller==6.22.3' .
+      - name: Build actual native Windows x64 executable
+        run: python tools/build_distribution.py --kind frozen --output out/artifacts
+      - name: Extract actual Windows distribution
+        run: python tools/extract_distribution.py out/artifacts/GENESIS-RELAY-0.1.0-windows-x86_64.zip out/windows-native
+      - name: Receive exact Linux capsule, execute Windows demo, produce return
+        run: python tools/ci_acceptance.py --phase receive --work out/windows-receive --capsule out/incoming/demo-capsule.zip --executable out/windows-native/GENESIS-RELAY-0.1.0-windows-x86_64/Genesis-Relay.exe --report out/reports/windows-native.json
+      - name: PowerShell receiver uses bundled executable without external Python
+        shell: pwsh
+        run: |
+          $receiver = './out/windows-native/GENESIS-RELAY-0.1.0-windows-x86_64/Receive-Relay.ps1'
+          $result = & $receiver -Operation Inspect -Capsule (Resolve-Path './out/incoming/demo-capsule.zip')
+          if ($LASTEXITCODE -ne 0) { throw 'Bundled PowerShell receiver failed' }
+          $info = ($result -join "`n") | ConvertFrom-Json
+          if (-not $info.capsule_id) { throw 'Receiver did not return verified capsule identity' }
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: windows-release-candidate
+          path: |
+            out/artifacts/*
+            out/reports/*.json
+          retention-days: 7
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: windows-demo-return
+          path: out/windows-receive/return/
+          retention-days: 7
+  linux-return:
+    needs: [linux-build, windows-build]
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: '3.13'
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: linux-demo-transfer
+          path: out/incoming
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: windows-demo-return
+          path: out/return
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: linux-release-candidate
+          path: out/linux-release
+      - name: Extract same verified Linux binary
+        run: python tools/extract_distribution.py out/linux-release/artifacts/GENESIS-RELAY-0.1.0-linux-x86_64.tar.gz out/native
+      - name: Apply, duplicate, rollback and conflict-test exact Windows return
+        run: python tools/ci_acceptance.py --phase reconcile --work out/reconcile --return-capsule out/return/demo-return.zip --source-project out/incoming/source-project --executable out/native/GENESIS-RELAY-0.1.0-linux-x86_64/Genesis-Relay --report out/reports/cross-platform-return.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: cross-platform-return-proof
+          path: out/reports/*.json
+          retention-days: 7

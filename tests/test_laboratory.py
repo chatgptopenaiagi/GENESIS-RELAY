@@ -10,9 +10,13 @@ class LaboratoryTests(unittest.TestCase):
         self.temp=tempfile.TemporaryDirectory(prefix='relay-lab-fixture-');self.root=Path(self.temp.name);self.project=self.root/'project';self.project.mkdir();(self.project/'_relay').mkdir()
         self.addCleanup(self.temp.cleanup)
     def fixture(self):
-        # Reuse only selected public source files in a disposable synthetic wrapper.
-        source=Path('/root/GENESIS-SCIENCE-LAB')
-        if not source.exists():self.skipTest('Deployed source fixture not available on this host')
+        if sys.platform!='linux' and self._testMethodName in {
+            'test_adaptation_preserves_kernel_bytes_and_source','test_missing_dependency_blocks_without_verification',
+            'test_destination_controls_cannot_reuse_source_port','test_unowned_environment_not_overwritten',
+            'test_destination_registry_and_ui_do_not_inherit_source_verification'}:
+            self.skipTest('Optional POSIX scientific-service adapter requires actual Linux; portable demo has independent native acceptance')
+        from synthetic_science_fixture import create
+        source=create(self.root/'synthetic-baseline')
         for name in ['server.py','worker.py','engine.py','catalogue.py']:(self.project/name).write_bytes((source/name).read_bytes())
         return source
     def fake_environment(self,command,**kwargs):

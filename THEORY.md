@@ -35,3 +35,9 @@ A return letter relates changes to the common source capsule and destination ada
 ZIP/ZIP64, content addressing, SHA-256, SQLite backup, Git bundles/patches, canonical serialization, process identity, file locks, atomic rename, journals, three-way comparison and scoped environment recreation are established engineering techniques. Relay's project-specific contribution is their explicit continuation contract: the engineering letter, complete disposition accounting, independent human-visible milestones, source/destination separation, route-qualified acceptance and return protocol. No historical priority, universal novelty or access to private model reasoning is claimed.
 
 Read CAPSULE-FORMAT.md, ARCHITECTURE.md and RETURN-PROTOCOL.md for implemented contracts and TEST-RESULTS.json for actual scope. A concise receiving mission should be small and testable: use the recorded interpreter to run one known experiment, inspect its saved provenance, and write a new handoff without changing immutable evidence or global authentication.
+
+## Public demonstration and attribution
+
+The public lightweight laboratory uses invented values, a small SQLite database, saved deterministic results and a bounded continuation task. It tests the continuation contract without requiring the author's phone, scientific installations or AI account. A native Windows demo result is evidence about that exact demo and artifact, not the full private scientific laboratory or every project using the capsule format.
+
+The operator of `chatgptopenaiagi` originated and directed GENESIS RELAY; implementation was AI-assisted using Codex. The theory preserves observable design rationale and documented requirements, with established techniques acknowledged. No claim is made to transfer hidden reasoning, model weights or personal authentication.

@@ -70,6 +70,7 @@ class CapsuleTests(unittest.TestCase):
   d=self.export()
   with self.assertRaises(capsule.CapsuleError):capsule.verify(d['path'],max_bytes=10)
   with self.assertRaises(capsule.CapsuleError):capsule.verify(d['path'],max_entries=1)
+ @unittest.skipIf(os.name=='nt','Linux-only unsafe filename creation; native Windows path rejection is covered separately')
  def test_unicode_spaces_and_windows_names_lossless_in_evidence(self):
   for name in ['α result.txt','two words.txt','CON.txt','Case.txt','case.txt','colon:name']:(self.source/name).write_text(name)
   d=self.export();v=capsule.verify(d['path']);paths={e['path'] for e in v['manifest']['entries']};self.assertTrue({'α result.txt','CON.txt','Case.txt','case.txt','colon:name'}<=paths)

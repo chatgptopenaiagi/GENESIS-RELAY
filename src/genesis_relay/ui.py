@@ -240,11 +240,17 @@ def do_action(state,source,action,ident=None):
    if not match:raise ValueError('Restore this capsule before creating a return letter.')
    receipt_path=Path(match.get('receipt_path') or destination/'receipts'/(capsule_id+'.json'))
    if action=='demo_accept':
+    if not demo.is_demo(match['project_path']):raise ValueError('Demo acceptance is available only for the known synthetic demonstration; generic projects need reviewed tests.')
     value=demo.accept_demo(receipt_path);return {'message':'Synthetic demo acceptance completed. Read the recorded checks; this does not qualify arbitrary scientific applications.','result':value}
    output=state/'outgoing'/('return-'+secrets.token_hex(10)+'.zip')
    value=demo.change_and_return(receipt_path,output) if action=='demo_return' else returns.create_return(receipt_path,output);record={**value,'created_at':now(),'base_capsule_id':capsule_id};atomic(state/'ui-evidence'/('return-created-'+str(value['return_id'])+'.json'),record);return {'message':'Return capsule created from the recorded adaptation baseline. Apply it only after a three-way preview on the sender.','result':record}
   if action=='receive_plan':value=receiver.plan(path,destination,route='LOCAL_LINUX' if os.name!='nt' else 'NATIVE_WINDOWS_X64');message='Restoration plan prepared. No code executed and no dependencies installed.'
-  elif action=='restore':value=receiver.restore(path,destination,route='LOCAL_LINUX' if os.name!='nt' else 'NATIVE_WINDOWS_X64');message='Restored into a new Relay-owned directory. Run supported acceptance separately; extraction alone is not readiness.'
+  elif action=='restore':
+   from . import capsule,demo
+   entries=capsule.verify(path)['manifest']['entries'];known={name:file_digest(demo.RESOURCE/name) for name in ['DEMO-PROJECT.json','experiment.py']}
+   profile=all(any(e.get('path')==name and e.get('sha256')==digest and e.get('disposition')=='INCLUDED_EXACT' for e in entries) for name,digest in known.items())
+   route='LOCAL_LINUX' if os.name!='nt' else 'NATIVE_WINDOWS_X64'
+   value=demo.restore_demo(path,destination,route=route) if profile else receiver.restore(path,destination,route=route);message='Restored into a new Relay-owned directory. Run supported acceptance separately; extraction alone is not readiness.'
   else:
    matches=[r for r in receipts(state) if r.get('capsule_id')==__import__('genesis_relay.capsule',fromlist=['verify']).verify(path)['capsule']['capsule_id']]
    if not matches:raise ValueError('Restore this capsule before verifying its working copy.')

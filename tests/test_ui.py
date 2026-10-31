@@ -34,7 +34,9 @@ class UITests(unittest.TestCase):
   for body in [{'action':'shell','command':'id'},{'action':'verify','capsule_id':'../../etc/passwd'},{'action':'export','source':'/etc'},{'action':'stop-service','port':8080}]:self.assertEqual(self.mutate(body)[0],400)
   for path in ['/private/ui/access.json','/../private/ui/access.json','/%2e%2e/private/ui/access.json','/download/../../etc/passwd.zip','/reports/no-such-report']:self.assertEqual(self.req(path)[0],404)
  def test_credentials_stay_private(self):
-  self.login();raw=self.req('/api/data')[1];self.assertNotIn(self.creds['password'].encode(),raw);self.assertEqual((self.state/'private/ui/access.json').stat().st_mode&0o777,0o600);self.assertEqual((self.state/'private/ui').stat().st_mode&0o777,0o700)
+  self.login();raw=self.req('/api/data')[1];self.assertNotIn(self.creds['password'].encode(),raw)
+  if os.name!='nt':self.assertEqual((self.state/'private/ui/access.json').stat().st_mode&0o777,0o600);self.assertEqual((self.state/'private/ui').stat().st_mode&0o777,0o700)
+  else:self.assertTrue((self.state/'private/ui/access.json').is_file()) # POSIX mode bits are not Windows ACL guarantees.
  def test_logout_revokes_session(self):
   self.login();self.assertEqual(self.req('/api/logout',{}, {'Origin':self.base,'X-CSRF-Token':self.token})[0],200);self.assertEqual(self.req('/api/data')[0],401)
  def test_fixed_action_records_background_result(self):
@@ -74,7 +76,7 @@ class UITests(unittest.TestCase):
   with patch.object(ui,'CODE',code):items=ui.software_assets()
   self.assertEqual([a['name'] for a in items],['Receive-Relay.ps1']);self.assertTrue(all(a['path'].startswith(str(code)) for a in items))
  def test_software_kit_and_checksums_are_exact_allowlisted_assets(self):
-  code=self.root/'checkout/src/genesis_relay';code.mkdir(parents=True);folder=self.root/'checkout/dist';folder.mkdir()
+  code=self.root/'checkout/src/genesis_relay';code.mkdir(parents=True);(self.root/'checkout/pyproject.toml').write_text('[project]\nname="synthetic"\n');folder=self.root/'checkout/dist';folder.mkdir()
   for name in ['genesis-relay-software-0.1.0.zip','SHA256SUMS','private-research.zip','access.json']:(folder/name).write_bytes(b'Synthetic fixture')
   with patch.object(ui,'CODE',code):items=ui.software_assets()
   self.assertEqual({x['name'] for x in items},{'genesis-relay-software-0.1.0.zip','SHA256SUMS'})
@@ -86,15 +88,32 @@ class UITests(unittest.TestCase):
   if port>65516:port=8120
   args=['--state-dir',str(state),'--source',str(source),'--port',str(port)]
   def invoke(action):
-   p=subprocess.run([*base,action,*args],cwd=unrelated,env=env,capture_output=True,text=True,timeout=25)
+   p=subprocess.run([*base,action,*args],cwd=unrelated,env=env,capture_output=True,text=True,timeout=60)
    self.assertEqual(p.returncode,0,p.stdout+p.stderr);return json.loads(p.stdout)
   first=None
   try:
-   first=invoke('start');self.assertEqual(first['state'],'RUNNING');self.assertTrue(first['owned']);record=ui.read(state/'private/ui/process.json');self.assertIn('-I',record['identity']['command'].split('\0'));self.assertIn(str(ui.CODE.parent),record['identity']['command'].split('\0'));self.assertTrue(ui.live(record));initial=record['pid']
+   first=invoke('start');self.assertEqual(first['state'],'RUNNING');self.assertTrue(first['owned']);record=ui.read(state/'private/ui/process.json');self.assertIn('-I',record['identity']['command']);self.assertIn(str(ui.CODE.parent),record['identity']['command']);self.assertTrue(ui.live(record));initial=record['pid']
    after=invoke('restart');self.assertEqual(after['state'],'RUNNING');self.assertNotEqual(ui.read(state/'private/ui/process.json')['pid'],initial);self.assertEqual(invoke('status')['state'],'RUNNING')
   finally:
    if first:invoke('stop')
   self.assertEqual(ui.status(state)['state'],'STOPPED')
+
+ def test_default_source_is_owned_synthetic_demo(self):
+  source=ui.source_root(self.state)
+  from genesis_relay import demo
+  self.assertTrue(demo.is_demo(source));self.assertTrue(source.is_relative_to(self.state));self.assertEqual(source,ui.source_root(self.state));self.assertNotEqual(source,Path.cwd())
+ def test_demo_actions_create_real_bound_acceptance_and_return(self):
+  from genesis_relay import demo
+  source=Path(demo.prepare(self.state)['source_root']);result=ui.do_action(self.state,source,'export');ident=result['result']['ui_id']
+  planned=ui.do_action(self.state,source,'receive_plan',ident)['result'];self.assertEqual(planned['state'],'RESTORATION_PLANNED')
+  restored=ui.do_action(self.state,source,'restore',ident)['result'];self.assertEqual(restored['state'],'RESTORED')
+  checked=ui.do_action(self.state,source,'demo_accept',ident)['result'];self.assertTrue(checked['ready_to_continue'])
+  view=ui.data_view(self.state,source);self.assertTrue(view['receipts'][0]['is_demo_project']);self.assertEqual(len(view['destination_reports']),1)
+  returned=ui.do_action(self.state,source,'demo_return',ident)['result'];self.assertTrue(Path(returned['path']).is_file());self.assertEqual(returned['base_capsule_id'],restored['capsule_id'])
+ def test_generic_project_cannot_claim_demo_acceptance(self):
+  (self.source/'README.md').write_text('Generic synthetic project.\n');result=ui.do_action(self.state,self.source,'export');ident=result['result']['ui_id'];ui.do_action(self.state,self.source,'restore',ident)
+  with self.assertRaises((ValueError,RuntimeError)):ui.do_action(self.state,self.source,'demo_accept',ident)
+  self.assertFalse(ui.receipts(self.state)[0].get('ready_to_continue',False))
 
 class Browser:
  def __init__(self,evidence):

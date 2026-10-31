@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+[project]
+name = "genesis-relay"
+version = "0.1.0"
+description = "Private project continuation capsules with source evidence and destination receipts"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "GENESIS Relay contributors"}]
+classifiers = ["Development Status :: 3 - Alpha", "Programming Language :: Python :: 3", "Programming Language :: Python :: 3.10", "Programming Language :: Python :: 3.11", "Programming Language :: Python :: 3.12", "Programming Language :: Python :: 3.13", "Programming Language :: Python :: 3.14"]
+dependencies = []
+[project.scripts]
+relay = "genesis_relay.cli:main"
+relay-receive = "genesis_relay.receive_cli:main"
+[tool.setuptools.packages.find]
+where = ["src"]
+[tool.setuptools.package-data]
+genesis_relay = ["web/*.html", "web/*.js", "web/*.css", "windows/*.ps1", "demo_project/*", "demo_project/**/*"]

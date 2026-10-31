@@ -1,0 +1,18 @@
+include README.md THEORY.md ARCHITECTURE.md CAPSULE-FORMAT.md KNOWLEDGE-HANDOFF.md WINDOWS-RESTORATION.md RETURN-PROTOCOL.md WINDOWS-NEXT-STEPS.md LICENSE
+recursive-include windows *.ps1
+recursive-include docs *.md
+recursive-include tools *.py *.sh
+recursive-include tests *.py
+recursive-include src/genesis_relay/web *.html *.css *.js
+recursive-include src/genesis_relay/windows *.ps1
+prune private
+prune capsules
+prune evidence
+prune dist
+prune build
+global-exclude __pycache__ *.py[cod] *.log
+recursive-include examples *.md *.csv
+
+include AGENTS.md QUICKSTART.md INSTALL-WINDOWS.md INSTALL-LINUX.md KNOWN-LIMITATIONS.md CHANGELOG.md
+recursive-include src/genesis_relay/demo_project *
+recursive-include .github *.yml

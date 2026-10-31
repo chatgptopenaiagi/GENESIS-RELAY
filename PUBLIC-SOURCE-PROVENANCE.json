@@ -1,0 +1,240 @@
+{
+  "schema_version": 1,
+  "provenance": "Stable targeted capture from operator existing Relay 0.1.0; original deployment and private history preserved separately. Clean public history, no source Git repository existed.",
+  "stable_capture": true,
+  "included_files": [
+    {
+      "path": "README.md",
+      "source_sha256": "781e310ddd1cda23be12f47deb00e377c92ac030c021b074147da77a478d01cd",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "THEORY.md",
+      "source_sha256": "a1ce1af1be3ad930838f440a1580d0f087b00d35c88e04847b249f2fef80c19e",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "ARCHITECTURE.md",
+      "source_sha256": "b0c83bdbe69853bb1d38d6bb085d76e58162eb15a1403a24581fbcc1968b3a61",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "CAPSULE-FORMAT.md",
+      "source_sha256": "8c11f04c289cda864652aeb44700d43daadd1292456a36191c29708e269e6d21",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "KNOWLEDGE-HANDOFF.md",
+      "source_sha256": "aac2c27efd91ba72f081827a25f82c3fc7941eb2a588f4a76762a58096ae4ce7",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "WINDOWS-RESTORATION.md",
+      "source_sha256": "e5a0f35f5b406d65baf8eaa4934a8c2289c2b360b900ba39ad0a6c97f804f543",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "WINDOWS-NEXT-STEPS.md",
+      "source_sha256": "d66fd3aca6d9d40c110b2fd3d96726a488a15526a6f5159325a93515f5d8e013",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "RETURN-PROTOCOL.md",
+      "source_sha256": "7eb7addb83fba96ba86fd4e4b7f5dd5d3e7cb601a3deef8f19b39d420afe3f23",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "UI-WALKTHROUGH.md",
+      "source_sha256": "4dc313ac6d2cbaed45616c7bfe51f364049d0d057b09beb5b20696c80fd40374",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "LICENSE",
+      "source_sha256": "7a603bdfe3e59fbaf1b48ef8169955390cac27999c626642390db1430bed7b8b",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "pyproject.toml",
+      "source_sha256": "f47afe0832193ab13efc5ec39b3c0e0015eba7b28de8e204f1232752c59d42ad",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "MANIFEST.in",
+      "source_sha256": "95223e0a3b2947c671eb1ab4a379bf24f0c537676798371c4025d3358aee598b",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": ".gitignore",
+      "source_sha256": "99860bc3c13d3cbc3d344fc349abac19d7d42298fdb85c08f1deadd919489250",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "tools/test_package.py",
+      "source_sha256": "a8435c6a5594cf7d0e3534a9caef6fa79c86efad9ecee672fcef01a2b9a37e6f",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "tools/check_streaming.py",
+      "source_sha256": "afc87381c38c23ba70ae0d1bc16c433d70555ea7bb966dcaed6d0dc602400c66",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "tools/build_kit.py",
+      "source_sha256": "963f4e5f182326fb7c94be74b358d0bc01971bf092016d45c037b18a9d8d8de3",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "src/genesis_relay/knowledge.py",
+      "source_sha256": "37d1e0f08658f43f361cef99921d6803950f5a7743ef10d78c2db5e6273bf9ad",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "src/genesis_relay/ui.py",
+      "source_sha256": "5ef1f80d832f0e16d385e3e26c80ad91d97eef9c9e2b31a146360b3df8fe3a29",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "src/genesis_relay/receiver.py",
+      "source_sha256": "4d9c838d3f958ad8a9a8c475b879f3b5f3ff322d67397eb4a2466580bc00816b",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "src/genesis_relay/laboratory.py",
+      "source_sha256": "116f475f1c7030918b341c6c19d894f52cd67225f1c1999935463eec0562d791",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "src/genesis_relay/returns.py",
+      "source_sha256": "843f3f6d5d00b3e21b5bcb86cda6928d1177199471df410761a79f339ee43dc9",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "src/genesis_relay/common.py",
+      "source_sha256": "0c228712073dab53f82bfacb7342b3c7db33da5599fa53de367d21a2175de099",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "src/genesis_relay/state.py",
+      "source_sha256": "f32317c6fbc70d0c062744e166dbe1f76fd08fa576e14552bc3b3019de608c0c",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "src/genesis_relay/discovery.py",
+      "source_sha256": "13d9c833cdd642d24816a3e25a2a6c261f377a1e209e78ac5b6eede8d35282ae",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "src/genesis_relay/capsule.py",
+      "source_sha256": "745912039dad8c410b30a6d7afd22a72d591117d16fb9e0c1926c3ba47450967",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "src/genesis_relay/__init__.py",
+      "source_sha256": "7be1a40fff455a7ca6cdea52559f7d740a5f590f8cd5e6653d4815c4aa9fed37",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "src/genesis_relay/receive_cli.py",
+      "source_sha256": "e537d8f271cba14c853b5f254eb12c80c4d3eb643b3ba7a985a106a8605a7929",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "src/genesis_relay/cli.py",
+      "source_sha256": "cb1e4e12d7ffa4cad0ec53db3fcb517e1d47a69c06e879f23c8aa06bc530e5fa",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "src/genesis_relay/__main__.py",
+      "source_sha256": "79ee6f134c5c5193377cf9b189cbdcc3e2095e49ba9cec310114441c15a917c4",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "src/genesis_relay/lab_cli.py",
+      "source_sha256": "30a398948bf107259287847663cca98bc3c497f3ed5943755cc13f1731a71a88",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "src/genesis_relay/web/index.html",
+      "source_sha256": "4b93bca879f3312e6227bf3d48a9abcdf23074f9db3bb232ba221c8a62e73a66",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "src/genesis_relay/web/style.css",
+      "source_sha256": "f89b02d2bcf5f997addeeeab1c3966ce3610ba0edb06b0be5d2f566d22a250c8",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "src/genesis_relay/web/app.js",
+      "source_sha256": "0bab264187f5f8da0c773e3efc035b731a67c67a602ecbc42309098a054c8e94",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "src/genesis_relay/windows/Install-Relay.ps1",
+      "source_sha256": "525afe066a8b8ff2c69ac1674cbbf7492f34c273d63b63fab896261926a34bdf",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "src/genesis_relay/windows/Receive-Relay.ps1",
+      "source_sha256": "e8d3cdc85ce253b8ad68cb38e8cfd104307506a9f224873171882e3483431352",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "tests/test_laboratory.py",
+      "source_sha256": "7b2c77b121907d8b374c6e54fbd5d9bde49cace764827c008e483f99879fa5c7",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "tests/test_ui.py",
+      "source_sha256": "eddcf1c1089a968a5f48c96edde7c824fbd914b9dc3770e9a6da3e4c677da12c",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "tests/test_capsule.py",
+      "source_sha256": "64af6df5b2851c034b00b97ad8a66e1bed0edc215642d01ea1020f86cb947386",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "tests/test_receiver_return.py",
+      "source_sha256": "dd233f6f1e37f94d7438b57c903dcc38c579affe4a0fd8c4d64d2c906fe830f0",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "windows/Receive-Relay.ps1",
+      "source_sha256": "e8d3cdc85ce253b8ad68cb38e8cfd104307506a9f224873171882e3483431352",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "windows/Install-Relay.ps1",
+      "source_sha256": "525afe066a8b8ff2c69ac1674cbbf7492f34c273d63b63fab896261926a34bdf",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "examples/README.md",
+      "source_sha256": "e0c70f0d3812f85ed54d91d7bebb3e898091f95bfb863b46721e74ce15ca6c14",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "examples/sample-project/README.md",
+      "source_sha256": "6b8f217197e9c25e31d816e76b414049ef21449411175f947b452a77b5c54b81",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "examples/sample-project/data.csv",
+      "source_sha256": "2935c5f6f5db6fd400d4a7be6657929560db3fb07cd6d8817b6fb7a4cb8a4740",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    },
+    {
+      "path": "examples/sample-project/NEXT-STEPS.md",
+      "source_sha256": "1b300872fb4bcc6e7e4ad0263532f4866dc6c8c1954a659b84c6a45f332d95fb",
+      "reason": "Reusable source, synthetic fixture, theory/docs or packaging; operational data excluded"
+    }
+  ],
+  "excluded_categories": [
+    "private capsules and returns",
+    "research and restored labs",
+    "raw personal inventories",
+    "credentials/authentication/environment installations",
+    "private screenshots/operational evidence",
+    "machine-specific preservation tools"
+  ]
+}

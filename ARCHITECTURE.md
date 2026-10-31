@@ -1,0 +1,23 @@
+# Relay architecture
+
+The package separates `discovery`, `capsule`, `knowledge`, `state`, `receiver`, `laboratory`, `returns`, `receive_cli`, and `ui`. Standard-library archive mechanics run without an AI service or Sentinel installation. Optional scientific execution requires actual destination engines, and Linux-specific laboratory lifecycle uses explicit ownership checks.
+
+Discovery accounts selected-root entries with lstat and explicit dispositions; it is not a whole-device inventory. Unknown environment files are retained rather than assumed disposable. Known credential names/content are excluded, source package caches referenced, and SQLite headers distinguish databases from similarly named repository caches.
+
+Capsule construction uses a private single-writer staging area, checks temporary disk budget, streams hashed objects, captures SQLite via backup API, validates database/artifact relationships, compares stable source signatures/entry sets and records canonical manifests. The known lab is briefly quiesced only after process identity/idle checks. Source restart executes in a finally block, with an independent post-capture observation. A final capsule is verified before atomic publication; interruptions retain prior capsules and recoverable staging.
+
+Knowledge capture reads project documents, literal experiment catalogue syntax and isolated source interpreter metadata. Claims carry OPERATOR_REQUIREMENT, OBSERVED_RESULT, HISTORICAL_REPORT, ENGINEERING_INFERENCE, UNTESTED_PROPOSAL or UNKNOWN and source references. It does not import arbitrary catalogue code or export unrelated chats. Sentinel is a project-filtered source-evidence adapter; destination facts are discovered anew.
+
+Sender state is distinct from receiver receipts. DRAFT → SNAPSHOTTED → VERIFIED_FOR_TRANSFER precedes receipt-backed EXPORTED. Receivers retain RECEIVED → INTEGRITY_VERIFIED → RESTORATION_PLANNED → RESTORED before actual acceptance and READY_TO_CONTINUE. Failures/blocked prerequisites remain independent. Route LOCAL_LINUX is labelled LOCAL_ROUNDTRIP_ONLY, never Windows native or WSL acceptance.
+
+Receiver validation uses the trusted package, not embedded project scripts. It keeps an unchanged capsule, writes an owned partial reconstruction and resumes only matching transfer prefixes/object hashes/receipt identity. No unrelated workspace is overwritten. An immutable source snapshot and a mutable working copy are separate. Source instructions remain archived; effective destination guidance is explicit. Dependency/environment adaptation and scientific tests require a separate authorized operation.
+
+The laboratory adapter creates a new destination-local environment using explicitly compatible existing scientific packages in the local proof. It changes working server paths/port/interpreter/Host/Origin and records diffs while preserving scientific kernel bytes. New credentials and result provenance belong to that destination. Windows native and WSL are qualified separately and never inferred from source engines or copied site-packages.
+
+Return capsules reference source and destination adaptation baselines. Preview compares common-base/source-base/current/returned hashes, maps platform paths, surfaces conflicts/guidance/platform review and keeps database reconciliation separate. Selected changes use backups/journals and duplicate IDs; rollback refuses to destroy newer edits. Multi-file application uses a recoverable journal, not an unqualified global filesystem transaction.
+
+The authenticated local UI has fixed actions, a single background management worker, exact local Host/Origin/CSRF checks, escaped imported text and streamed range-capable private downloads. Each project/capsule/state/report is visible without presenting raw JSON as the primary interface. Downloaded, received, restored, tested and ready remain distinct. Local ports are discovered without stopping occupied listeners.
+
+Software packaging includes reusable source, tests, synthetic fixtures and PowerShell adapters. Private capsules, original machine inventories, credentials and research evidence are excluded. Read TEST-RESULTS.json and PLATFORM-STATUS.json for actual current verification; a workflow or script alone is not evidence of native Windows execution.
+
+Acceptance receipts describe the tested state at their recorded time. They are not continuous monitoring. A newly recorded acceptance failure invalidates the current readiness flag even when an earlier READY milestone remains in the append-only history. Working copies preserve source bytes and portable file mode information; full filesystem identity, ACLs, extended attributes, hardlink relationships and directory timestamp semantics are outside version 1 restoration guarantees.

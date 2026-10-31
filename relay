@@ -1,0 +1,4 @@
+#!/bin/sh
+set -eu
+relay_root=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+exec "${GENESIS_RELAY_PYTHON:-python3}" -I -c 'import sys;sys.path.insert(0,sys.argv.pop(1));from genesis_relay.cli import main;raise SystemExit(main())' "$relay_root/src" "$@"

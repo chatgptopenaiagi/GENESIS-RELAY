@@ -1,0 +1,17 @@
+private/
+capsules/
+evidence/
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+*.partial
+*.log
+.env
+.env.*
+.build-venv/
+.release-work/
+release-assets/
+.local-evidence/
